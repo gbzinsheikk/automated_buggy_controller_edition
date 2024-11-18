@@ -18,9 +18,10 @@ Com isso em mente, esse microcontrolador foi escolhido por seu preço, disponibi
 - **Placa de Interface**
 
   De forma a usar o microcontrolador ESP32 com o carrinho precisamos de uma placa de interface. Essa placa fica responsável por transferir a pinagem do ESP para o carrinho, que originalmente não é compatível.
+  
   ![PlacadeInterfaceImage2](https://github.com/user-attachments/assets/75446d12-d3c9-4056-aed6-f27858e13b1e)
 
-  **Fonte: Abreu (2024, p.54).**
+  **Fonte: Abreu (2022, p.54).**
 
 Software
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -48,13 +49,60 @@ O esquema de funcionamento do carrinho, de forma simplificada, pode ser visualiz
 
   ![image](https://github.com/user-attachments/assets/0776919d-c4cd-43e0-8e31-d755baa2ed92)
 
-   **Fonte: Abreu (2024, p.51).**
+   **Fonte: Abreu (2022, p.51).**
 
-  Ao conectar o ESP 32 a essa placa, assim ficará o seu esquema de conexões:
+  Os pinos da placa de interface em relação ao ESP32 seguem a seguinte relação:
 
-  ![image](https://github.com/user-attachments/assets/3f4a2d14-cbc5-45a2-b738-e352d939799e)
+  ### Pinos analógicos
 
-  **Fonte: Elaboração própria (2024).**
+  | ESP32 pin | Analog input | Signal |
+  | --------- | ------------ | ------ |
+  | D32       | ADC0         | Bat0   |
+  | D33       | ADC1         | Bat1   |
+  | X         | ADC2         | Ampop1 |
+  | X         | ADC3         | Ampop2 |
+  
+  ### Sensor ultrassônico
+  
+  | ESP32 Pin | Signal |
+  | --------- | ------ |
+  | D13       | Echo0  |
+  | D12       | Trig0  |
+  | D14       | Echo1  |
+  | D27       | Trig1  |
+  
+  ### Motores
+  
+  | ESP32 Pin | Signal |
+  | --------- | ------ |
+  | D21       | PWM1   |
+  | D22       | PWM1N  |
+  | D18       | PWM2   |
+  | D19       | PWM2N  |
+  
+  ### Encoder de velocidade
+  
+  | ESP32 Pin | Signal |
+  | --------- | ------ |
+  | D15       | D0     |
+  | D4        | D1     |
+  
+  ### Sensor ótico
+  
+  | ESP32 Pin | Signal |
+  | --------- | ------ |
+  | D26       | R_TCRT |
+  | D25       | L_TCRT |
+  
+  ### UART
+  
+  | ESP32 Pin | Signal |
+  | --------- | ------ |
+  | TX        | TX     |
+  | RX        | RX     |
+  ___
+
+  **Fonte: Nycolas Abreu (2022).**
 
   Note-se que inputs sem um fio associado são fios que não tem uma conexão direta ao sistema, pois não são necessários.
 
@@ -73,4 +121,4 @@ XTARKE. GitHub - xtarke/automated_buggy. Disponível em: <https://github.com/xta
 
 ABREU, N. ESTUDO E DESENVOLVIMENTO DE PROGRAMAÇÕES LOW-CODE E NO-CODE PARA UM SISTEMA EMBARCADO. Disponível em: <https://sigaa.ifsc.edu.br/sigaa/verProducao?idProducao=2955250&key=bfcebe3e4ac7408faaafce6f45a562f1>. Acesso em: nov. 15DC. 
 
-Módulo WiFi ESP32 Bluetooth. Disponível em: <https://www.byteflop.com.br/modulo-wifi-esp32-bluetooth>. 
+NYCOLASABREU. GitHub - NycolasAbreu/Buggy_TCC: Repositório para armazenar o projeto de tcc. Disponível em: <https://github.com/NycolasAbreu/Buggy_TCC>. Acesso em: 18 nov. 2024. 
