@@ -1,4 +1,4 @@
-Aprimoramento de um carrinho por controle remoto
+Aprimoramento de Buggy AWD por controle remoto
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Projetistas:
 Eduardo Rodrigues de Oliveira;
@@ -11,7 +11,7 @@ Iteração de: https://github.com/gbzinsheikk/automated_buggy_controller_edition
 Informações Gerais
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-O projeto consiste no aprimoramento de um carrinho, anteriormente projetado para ter capacidades autônomas, para também ter a possibilidade de ser controlado via página WEB. Visando uma utilização dinâmica e prática, onde o usuário poderá facilmente alternar entre seu modo de uso interativamente. Paralelamente, será feita a montagem de uma pista projetada para demonstrar a movimentação autônoma do carrinho. Na realização deste projeto, visa-se explorar e aplicar conceitos tecnológicos como: controle remoto via Wi-Fi, armazenamento de dados e direção autônoma, a um objeto, no caso o carrinho. Tendo-se motivações educacionais e práticas, abordando conceitos de programação, automação e conectividade com o hardware. 
+O projeto consiste no aprimoramento de um Buggy AWD, anteriormente projetado para ter capacidades autônomas, para também ter a possibilidade de ser controlado via página WEB. Visando uma utilização dinâmica e prática, onde o usuário poderá facilmente alternar entre seu modo de uso de forma interativa. Paralelamente, será feita a montagem de uma pista projetada para demonstrar a movimentação autônoma do carrinho. Na realização deste projeto, visa-se explorar e aplicar conceitos tecnológicos como: controle remoto via Wi-Fi, armazenamento de dados e direção autônoma, a um objeto, no caso o carrinho. Tendo-se motivações educacionais e práticas, abordando conceitos de programação, automação e conectividade com o hardware. 
 
 Objetivos
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -30,3 +30,8 @@ carrinho;
 possível resgatá-los para que o carrinho os execute automaticamente em tempo posterior;
 - A direção autônoma será capaz de guiá-lo por uma pista pré estabelecida com
 características de fácil reconhecimento pelos sensores presentes.
+
+Detalhes de Design
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/design.md
