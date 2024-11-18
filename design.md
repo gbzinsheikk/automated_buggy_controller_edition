@@ -17,9 +17,7 @@ Com isso em mente, esse microcontrolador foi escolhido por seu preço, disponibi
 
 - **Placa de Interface**
 
-  De forma a usar o microcontrolador ESP 32 com o carrinho precisamos de uma placa de interface. Visto que o carrinho possui instruções em software baseadas em Arduino, a placa de interface fica responsável por traduzir as chamadas do software compatíveis com
-o Arduino para um formato que o ESP 32 seja capaz de executar.
-
+  De forma a usar o microcontrolador ESP32 com o carrinho precisamos de uma placa de interface. Essa placa fica responsável por transferir a pinagem do ESP para o carrinho, que originalmente não é compatível.
   ![PlacadeInterfaceImage2](https://github.com/user-attachments/assets/75446d12-d3c9-4056-aed6-f27858e13b1e)
 
   **Fonte: Abreu (2024, p.54).**
@@ -40,7 +38,7 @@ Esquemático
 
 O esquema de funcionamento do carrinho, de forma simplificada, pode ser visualizado da seguinte forma:
 
-  ![BUGGY AWD drawio](https://github.com/user-attachments/assets/fdd81e7c-ee75-462d-9032-700ec9fe861f)
+  ![buggy 3 drawio](https://github.com/user-attachments/assets/e01c69c3-2861-4bb0-a179-4fc3eb880ccf)
 
   **Fonte: Elaboração própria (2024).**
 
