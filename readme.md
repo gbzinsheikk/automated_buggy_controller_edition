@@ -6,6 +6,8 @@ Gabriel da Silva Huebra.
 
 Iteração de: https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/readme_legacy.md
 
+![TopImageCar](https://github.com/user-attachments/assets/3be4ee0a-f6be-4c86-9c9e-81e15b96619b)
+
 Informações Gerais
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
