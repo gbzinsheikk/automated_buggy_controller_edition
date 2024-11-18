@@ -18,7 +18,7 @@ Com isso em mente, esse microcontrolador foi escolhido por seu preço, disponibi
 - **Placa de Interface**
 
   De forma a usar o microcontrolador ESP 32 com o carrinho precisamos de uma placa de interface. Visto que o carrinho possui instruções em software baseadas em Arduino, a placa de interface fica responsável por traduzir as chamadas do software compatíveis com
-o Arduino para um formato que o esp32 seja capaz de executar.
+o Arduino para um formato que o ESP 32 seja capaz de executar.
 
   ![PlacadeInterfaceImage2](https://github.com/user-attachments/assets/75446d12-d3c9-4056-aed6-f27858e13b1e)
 
@@ -26,12 +26,12 @@ o Arduino para um formato que o esp32 seja capaz de executar.
 
 Software
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-- Página web
+- Página Web
   
-  A pagina web roda diretamente no microcontrolador e consiste nos controles do carrinho e na opção para armazenar os comandos anteriores, que podem vir a ser executados posteriormente.
+  A página web roda diretamente no microcontrolador e consiste nos controles do carrinho e na opção para armazenar os comandos anteriores, que podem vir a ser executados posteriormente.
 
 ![PaginaWeb](https://github.com/user-attachments/assets/add8dadb-006c-4441-8cb5-9e02a48d5318)
-**Fonte: Elaboração própria (2024).**
+  **Fonte: Elaboração própria (2024).**
 
   A opção de armazenamento dos controles é realizada através de cookies criados usando a linguagem javascript, inserida no html da página, e permitem a função de salvar inputs do usuário. 
 
@@ -46,13 +46,13 @@ O esquema de funcionamento do carrinho, de forma simplificada, pode ser visualiz
 
 - Conexões do ESP
 
-  Usando a placa shield, podemos conectar o esp ao carrinho e usá-lo como substituto ao ESP32. Segue abaixo o esquemático da placa shield:
+  Usando a placa shield, podemos conectar o ESP ao carrinho e usá-lo como substituto ao arduino. Segue abaixo o esquemático da placa shield:
 
   ![image](https://github.com/user-attachments/assets/0776919d-c4cd-43e0-8e31-d755baa2ed92)
 
    **Fonte: Abreu (2024, p.51).**
 
-  Ao conectar o ESP32 a essa placa, assim ficará o seu esquema de conexões:
+  Ao conectar o ESP 32 a essa placa, assim ficará o seu esquema de conexões:
 
   ![image](https://github.com/user-attachments/assets/3f4a2d14-cbc5-45a2-b738-e352d939799e)
 
@@ -63,7 +63,7 @@ O esquema de funcionamento do carrinho, de forma simplificada, pode ser visualiz
 Pista
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Esse projeto também desenvolverá uma pista com um traçado pré definido, para que o carrinho possa executar seu trajeto de forma autônoma, preservando a sua funcionalidade anterior, junto a funcionalidade de controle adicionada. Serão utilizados materiais de fácil acesso, como madeira, e uma fita para delimitar seus limites.
+Esse projeto também desenvolverá uma pista com um traçado pré definido, para que o carrinho possa executar seu trajeto de forma autônoma, preservando a sua funcionalidade anterior, junto com a funcionalidade de controle adicionada. Serão utilizados materiais de fácil acesso, como madeira, e uma fita para delimitar seus limites.
 
 
 Referências
