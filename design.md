@@ -1,6 +1,7 @@
 Design de Funcionamento
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Continuação de: https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/readme.md
 
 Hardware
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Software
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - Página web
   
-  A pagina web consiste nos controles do carrinho e na opção para armazenar os comandos anteriores , que podem vir a ser executados posteriormente.
+  A pagina web roda diretamente no microcontrolador e consiste nos controles do carrinho e na opção para armazenar os comandos anteriores, que podem vir a ser executados posteriormente.
 
 ![PaginaWeb](https://github.com/user-attachments/assets/add8dadb-006c-4441-8cb5-9e02a48d5318)
 **Fonte: Elaboração própria (2024).**
@@ -36,6 +37,33 @@ Software
 
 Esquemático
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+O esquema de funcionamento do carrinho, de forma simplificada, pode ser visualizado da seguinte forma:
+
+  ![BUGGY AWD drawio](https://github.com/user-attachments/assets/fdd81e7c-ee75-462d-9032-700ec9fe861f)
+
+  **Fonte: Elaboração própria (2024).**
+
+- Conexões do ESP
+
+  Usando a placa shield, podemos conectar o esp ao carrinho e usá-lo como substituto ao ESP32. Segue abaixo o esquemático da placa shield:
+
+  ![image](https://github.com/user-attachments/assets/0776919d-c4cd-43e0-8e31-d755baa2ed92)
+
+   **Fonte: Abreu (2024, p.51).**
+
+  Ao conectar o ESP32 a essa placa, assim ficará o seu esquema de conexões:
+
+  ![image](https://github.com/user-attachments/assets/3f4a2d14-cbc5-45a2-b738-e352d939799e)
+
+  **Fonte: Elaboração própria (2024).**
+
+  Note-se que inputs sem um fio associado são fios que não tem uma conexão direta ao sistema, pois não são necessários.
+
+Pista
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Esse projeto também desenvolverá uma pista com um traçado pré definido, para que o carrinho possa executar seu trajeto de forma autônoma, preservando a sua funcionalidade anterior, junto a funcionalidade de controle adicionada. Serão utilizados materiais de fácil acesso, como madeira, e uma fita para delimitar seus limites.
 
 
 Referências
