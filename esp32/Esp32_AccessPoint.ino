@@ -12,29 +12,29 @@ WiFiServer server(80);
 String header;
 
 // Auxiliar variables to store the current output state
-String output26State = "off";
-String output27State = "off";
 String output21State = "off";
 String output18State = "off";
+String output19State = "off";
+String output22State = "off";
 
 // Assign output variables to GPIO pins
-const int output26 = 26;
-const int output27 = 27;
 const int output21 = 21;
 const int output18 = 18;
+const int output19 = 19;
+const int output22 = 22;
 
 void setup() {
   Serial.begin(115200);
   // Initialize the output variables as outputs
-  pinMode(output26, OUTPUT);
-  pinMode(output27, OUTPUT);
   pinMode(output21, OUTPUT);
   pinMode(output18, OUTPUT);
+  pinMode(output19, OUTPUT);
+  pinMode(output22, OUTPUT);
   // Set outputs to LOW
-  digitalWrite(output26, LOW);
-  digitalWrite(output27, LOW);
   digitalWrite(output21, LOW);
   digitalWrite(output18, LOW);
+  digitalWrite(output19, LOW);
+  digitalWrite(output22, LOW);
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Setting AP (Access Point)…");
@@ -48,14 +48,14 @@ void setup() {
 }
 
 void turnOffAllOutputs() {
-  digitalWrite(output26, LOW);
-  digitalWrite(output27, LOW);
   digitalWrite(output21, LOW);
   digitalWrite(output18, LOW);
-  output26State = "off";
-  output27State = "off";
+  digitalWrite(output19, LOW);
+  digitalWrite(output22, LOW);
   output21State = "off";
   output18State = "off";
+  output19State = "off";
+  output22State = "off";
 }
 
 void loop(){
@@ -80,49 +80,72 @@ void loop(){
             client.println("Connection: close");
             client.println();
             
-            // Turns the GPIOs on and off
+            // Turns the GPIOs on and off       
+            // UP
             if (header.indexOf("GET /up") >= 0) {
               if (output21State == "off" && output18State == "off") {
+                // Liga UP
                 Serial.println("UP pressed - GPIO 21 on & GPIO 18 on");
-                turnOffAllOutputs();
+                turnOffAllOutputs();  // Desliga todos os outros botões
                 output21State = "on";
                 output18State = "on";
                 digitalWrite(output21, HIGH);
                 digitalWrite(output18, HIGH);
-              } else if (header.indexOf("GET /up/off") >= 0) {
+              } else {
+                // Desliga UP
                 Serial.println("UP released - GPIO 21 off & GPIO 18 off");
                 output21State = "off";
                 output18State = "off";
                 digitalWrite(output21, LOW);
                 digitalWrite(output18, LOW);
               }
-            } else if (header.indexOf("GET /down/on") >= 0) {
-              Serial.println("DOWN pressed - GPIO 27 on");
+            }
+            // DOWN
+            else if (header.indexOf("GET /down/on") >= 0) {
+              Serial.println("DOWN pressed - GPIO 19 & GPIO 22 on");
               turnOffAllOutputs();
-              output27State = "on";
-              digitalWrite(output27, HIGH);
+              output19State = "on";
+              output22State = "on";
+              digitalWrite(output19, HIGH);
+              digitalWrite(output22, HIGH);
             } else if (header.indexOf("GET /down/off") >= 0) {
-              Serial.println("DOWN released - GPIO 27 off");
-              output27State = "off";
-              digitalWrite(output27, LOW);
+              Serial.println("DOWN released - GPIO 19 & GPIO 22 off");
+              output19State = "off";
+              output22State = "off";
+              digitalWrite(output19, LOW);
+              digitalWrite(output22, LOW);
+
+            // LEFT
             } else if (header.indexOf("GET /left/on") >= 0) {
-              Serial.println("LEFT pressed - GPIO 21 on");
+              Serial.println("LEFT pressed - GPIO 21 & GPIO 19 on");
               turnOffAllOutputs();
               output21State = "on";
+              output19State = "on";
               digitalWrite(output21, HIGH);
+              digitalWrite(output19, HIGH);
             } else if (header.indexOf("GET /left/off") >= 0) {
-              Serial.println("LEFT released - GPIO 21 off");
+              Serial.println("LEFT released - GPIO 21 & GPIO 19 off");
               output21State = "off";
+              output19State = "off";
               digitalWrite(output21, LOW);
+              digitalWrite(output19, LOW);
+
+            // RIGHT
             } else if (header.indexOf("GET /right/on") >= 0) {
-              Serial.println("RIGHT pressed - GPIO 18 on");
+              Serial.println("RIGHT pressed - GPIO 18 & GPIO 22 on");
               turnOffAllOutputs();
               output18State = "on";
+              output22State = "on";
               digitalWrite(output18, HIGH);
+              digitalWrite(output22, HIGH);
             } else if (header.indexOf("GET /right/off") >= 0) {
-              Serial.println("RIGHT released - GPIO 18 off");
+              Serial.println("RIGHT released - GPIO 18 & GPIO 22 off");
               output18State = "off";
+              output22State = "off";
               digitalWrite(output18, LOW);
+              digitalWrite(output22, LOW);
+
+            // RESET
             } else if (header.indexOf("GET /reset") >= 0) {
               Serial.println("RESET pressed");
               turnOffAllOutputs();
@@ -143,6 +166,7 @@ void loop(){
             client.println(".gpio21 { grid-area: gpio21; }");
             client.println(".gpio18 { grid-area: gpio18; }");
             client.println(".gpio27 { grid-area: gpio27; }");
+            client.println(".gpio27 { grid-area: gpio27; }");
             client.println(".reset { grid-area: reset; }");
             client.println(".footer { position: absolute; bottom: 10px; right: 10px; font-style: italic; font-size: 12px; }");
             client.println(".button-reset { background-color: #ff4747; }");
@@ -151,58 +175,49 @@ void loop(){
             client.println("<body><div class=\"layout\">");
             client.println("<div class=\"header\">~ le controls</div>");
             
-            // UP
-            client.println("<div class=\"gpio gpio26\"><p>GPIO 21 and 18 State " + output21State + "</p>");
-            if (output21State == "off" && output18State == "off") {
+             // UP
+            client.println("<div class=\"gpio gpio26\"><p>GPIO 21 - State " + output21State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 18 - State " + output18State + "</p>");
+            if (output21State == "on" && output18State == "on" && output19State == "off" && output22State == "off") {
+              client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
+            } 
+             else {
               client.println("<p><a href=\"/up\"><button class=\"button-grey\">UP</button></a></p>");
-            } else if (output21State == "off" && output18State == "on") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey\">UP</button></a></p>");
-            } else if (output21State == "on" && output18State == "off") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey\">UP</button></a></p>");
-            } else if (output21State == "on" && output18State == "on") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
-            }
-            client.println("</div>");
-
-            // LEFT
-            client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "</p>");
-            if (output21State == "off") {
-              client.println("<p><a href=\"/left/on\"><button class=\"button-grey\">LEFT</button></a></p>");
-            } else if (output21State == "off" && output18State == "on") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey\">UP</button></a></p>");
-            } else if (output21State == "on" && output18State == "on") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
-            } else if (output21State == "on" && output18State == "off") {
-              client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT</button></a></p>");
             } 
             client.println("</div>");
 
+
+            // LEFT
+            client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 19 - State " + output19State + "</p>");
+            if (output21State == "on" && output18State == "off" && output19State == "on" && output22State == "off") {
+              client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/left/on\"><button class=\"button-grey\">LEFT</button></a></p>");
+            }
+            client.println("</div>");
+
             // RIGHT
-            client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "</p>");
-            if (output18State == "off") {
-              client.println("<p><a href=\"/right/on\"><button class=\"button-grey\">RIGHT</button></a></p>");
-            } else if (output21State == "on" && output18State == "off") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey\">UP</button></a></p>");
-            } else if (output21State == "on" && output18State == "on") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
-            } else if (output21State == "off" && output18State == "on") {
+            client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 22 - State " + output22State + "</p>");
+            if (output21State == "off" && output18State == "on" && output19State == "off" && output22State == "on") {
               client.println("<p><a href=\"/right/off\"><button class=\"button-grey button-green\">RIGHT</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/right/on\"><button class=\"button-grey\">RIGHT</button></a></p>");
             }
             client.println("</div>");
 
             // DOWN
-            client.println("<div class=\"gpio gpio27\"><p>GPIO 27 - State " + output27State + "</p>");
-            if (output27State == "off") {
-              client.println("<p><a href=\"/down/on\"><button class=\"button-grey\">DOWN</button></a></p>");
-            } else {
+            client.println("<div class=\"gpio gpio27\"><p>GPIO 19 - State " + output19State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 22 - State " + output22State + "</p>");
+            if (output19State == "on" && output22State == "on") {
               client.println("<p><a href=\"/down/off\"><button class=\"button-grey button-green\">DOWN</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/down/on\"><button class=\"button-grey\">DOWN</button></a></p>");
             }
             client.println("</div>");
 
+            // RESET
             client.println("<div class=\"gpio reset\"><p>RESET</p>");
             client.println("<p><a href=\"/reset\"><button class=\"button-grey button-reset\">RESET</button></a></p>");
             client.println("</div>");
-
+            
             client.println("<div class=\"footer\">by Eduardoros & gbzinsheik</div>");
             client.println("</div></body></html>");
             
