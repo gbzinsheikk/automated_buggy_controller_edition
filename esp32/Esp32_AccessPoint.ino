@@ -1,6 +1,8 @@
 // Load Wi-Fi library
 #include <WiFi.h>
 
+#define PIN_D33 33
+
 // Replace with your network credentials
 const char* ssid     = "BuggyAWD-AP";
 const char* password = "abc42069";
@@ -23,8 +25,11 @@ const int output18 = 18;
 const int output19 = 19;
 const int output22 = 22;
 
+
 void setup() {
   Serial.begin(115200);
+  pinMode(PIN_D33, INPUT);
+  
   // Initialize the output variables as outputs
   pinMode(output21, OUTPUT);
   pinMode(output18, OUTPUT);
@@ -59,6 +64,8 @@ void turnOffAllOutputs() {
 }
 
 void loop(){
+  
+
   WiFiClient client = server.available();   // Listen for incoming clients
 
   if (client) {                             // If a new client connects,
@@ -80,10 +87,25 @@ void loop(){
             client.println("Connection: close");
             client.println();
             
+            // 4096           ------      100%
+            // analogValue    ------       batPerc%
+
+            // batPerc = (100 * analogValue) / 4096
+            
+            int analogValue = analogRead(PIN_D33);
+            //Serial.println(analogValue);
+            //delay(5000);
+
+            int batPerc = (100 * analogValue / 4096);
+            Serial.println(String("Battery life: ") + batPerc + "%"); 
+            //Serial.println(batPerc);
+            //Serial.println("%");
+            //delay(10000);
+
             // Turns the GPIOs on and off       
             // UP
             if (header.indexOf("GET /up") >= 0) {
-              if (output21State == "off" && output18State == "off") {
+              if (output21State == "off" || output18State == "off") {
                 // Liga UP
                 Serial.println("UP pressed - GPIO 21 on & GPIO 18 on");
                 turnOffAllOutputs();  // Desliga todos os outros botões
@@ -91,6 +113,8 @@ void loop(){
                 output18State = "on";
                 digitalWrite(output21, HIGH);
                 digitalWrite(output18, HIGH);
+                digitalWrite(output22, LOW);
+                digitalWrite(output19, LOW);
               } else {
                 // Desliga UP
                 Serial.println("UP released - GPIO 21 off & GPIO 18 off");
@@ -168,6 +192,7 @@ void loop(){
             client.println(".gpio27 { grid-area: gpio27; }");
             client.println(".gpio27 { grid-area: gpio27; }");
             client.println(".reset { grid-area: reset; }");
+            client.println(".battery { font-size: 18px; margin-top: 20px; text-align: center; }");
             client.println(".footer { position: absolute; bottom: 10px; right: 10px; font-style: italic; font-size: 12px; }");
             client.println(".button-reset { background-color: #ff4747; }");
             client.println("</style></head>");
@@ -187,16 +212,16 @@ void loop(){
 
 
             // LEFT
-            client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 19 - State " + output19State + "</p>");
+            client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "<br>GPIO 19 - State " + output19State + "</p>");
             if (output21State == "on" && output18State == "off" && output19State == "on" && output22State == "off") {
-              client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT</button></a></p>");
+              client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT&nbsp</button></a></p>");
             } else {
               client.println("<p><a href=\"/left/on\"><button class=\"button-grey\">LEFT</button></a></p>");
             }
             client.println("</div>");
 
             // RIGHT
-            client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 22 - State " + output22State + "</p>");
+            client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "<br>GPIO 22 - State " + output22State + "</p>");
             if (output21State == "off" && output18State == "on" && output19State == "off" && output22State == "on") {
               client.println("<p><a href=\"/right/off\"><button class=\"button-grey button-green\">RIGHT</button></a></p>");
             } else {
@@ -214,14 +239,19 @@ void loop(){
             client.println("</div>");
 
             // RESET
-            client.println("<div class=\"gpio reset\"><p>RESET</p>");
+            client.println(String("<div class=\"gpio reset\"><p>Battery life: ") + batPerc + "%</p>");
+
+            //client.println("<div class=\"gpio reset\"><p>RESET</p>");
             client.println("<p><a href=\"/reset\"><button class=\"button-grey button-reset\">RESET</button></a></p>");
             client.println("</div>");
+
+            //client.println(String("<div class=\"battery\">Battery life: " )+ batPerc + "%</div>");
+
+            client.println("<div class=\"footer\">by Eduardoros & gbzinsheik");
+            client.println("</div>");
+
+            client.println("</body></html>");
             
-            client.println("<div class=\"footer\">by Eduardoros & gbzinsheik</div>");
-            client.println("</div></body></html>");
-            
-            // The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
             break;
