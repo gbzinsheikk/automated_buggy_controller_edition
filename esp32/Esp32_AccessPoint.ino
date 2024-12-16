@@ -1,7 +1,12 @@
 // Load Wi-Fi library
 #include <WiFi.h>
 
-#define PIN_D33 33
+#define PIN_D32 32
+#define TRIGGER_PIN 12
+#define ECHO_PIN 13
+
+// Constante para a velocidade do som em cm/s
+#define VELOCIDADE_SOM 34300 // em cm/s (340 m/s)
 
 // Replace with your network credentials
 const char* ssid     = "BuggyAWD-AP";
@@ -25,12 +30,19 @@ const int output18 = 18;
 const int output19 = 19;
 const int output22 = 22;
 
+// Variáveis para cálculo da distância
+long duracao; 
+float distancia;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(PIN_D33, INPUT);
-  
+
   // Initialize the output variables as outputs
+  pinMode(TRIGGER_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
+  pinMode(PIN_D32, OUTPUT);
+  
   pinMode(output21, OUTPUT);
   pinMode(output18, OUTPUT);
   pinMode(output19, OUTPUT);
@@ -92,15 +104,43 @@ void loop(){
 
             // batPerc = (100 * analogValue) / 4096
             
-            int analogValue = analogRead(PIN_D33);
-            //Serial.println(analogValue);
-            //delay(5000);
+            int analogValue = analogRead(PIN_D32);
 
             int batPerc = (100 * analogValue / 4096);
-            Serial.println(String("Battery life: ") + batPerc + "%"); 
-            //Serial.println(batPerc);
-            //Serial.println("%");
-            //delay(10000);
+            Serial.println(String("Battery life: ") + batPerc + "%");
+
+            Serial.print("analogValue: ");
+            Serial.print(analogValue);
+            Serial.println();
+
+            Serial.print("batPerc: "); 
+            Serial.print(batPerc);
+            Serial.println();
+
+            // Gera um pulso no pino Trigger
+            digitalWrite(TRIGGER_PIN, LOW);
+            delayMicroseconds(2);
+            digitalWrite(TRIGGER_PIN, HIGH);
+            delayMicroseconds(10);
+            digitalWrite(TRIGGER_PIN, LOW);
+
+            // Lê o tempo de ida e volta do sinal no pino Echo
+            duracao = pulseIn(ECHO_PIN, HIGH);
+
+            // Calcula a distância (tempo/2 * velocidade do som)
+            distancia = (duracao * VELOCIDADE_SOM) / 2 / 10000.0;
+            
+            Serial.print("Duracao: ");
+            Serial.print(duracao);
+            Serial.println();
+
+            // Exibe a distância no monitor serial
+            Serial.print("Distancia: ");
+            Serial.print(distancia);
+            Serial.println(" cm");
+
+            // Atraso para evitar sobrecarga no monitor serial
+            //delay(500);
 
             // Turns the GPIOs on and off       
             // UP
