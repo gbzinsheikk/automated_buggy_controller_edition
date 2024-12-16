@@ -1,4 +1,4 @@
-// Load Wi-Fi library
+// Biblioteca Wi-Fi
 #include <WiFi.h>
 
 #define PIN_D32 32
@@ -8,23 +8,23 @@
 // Constante para a velocidade do som em cm/s
 #define VELOCIDADE_SOM 34300 // em cm/s (340 m/s)
 
-// Replace with your network credentials
+// Credenciais da network
 const char* ssid     = "BuggyAWD-AP";
 const char* password = "abc42069";
 
 // Set web server port number to 80
 WiFiServer server(80);
 
-// Variable to store the HTTP request
+// Variavel para guardar o HTTP request
 String header;
 
-// Auxiliar variables to store the current output state
+// Variáveis auxliares para guardar o estado de output atual
 String output21State = "off";
 String output18State = "off";
 String output19State = "off";
 String output22State = "off";
 
-// Assign output variables to GPIO pins
+// Associando as variáveis de output aos pinos GPIO
 const int output21 = 21;
 const int output18 = 18;
 const int output19 = 19;
@@ -37,23 +37,27 @@ float distancia;
 void setup() {
   Serial.begin(115200);
 
-  // Initialize the output variables as outputs
+  // Configuração de input/output dos pinos
+
+  // Sensores dianteiros
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
+  // Bateria
   pinMode(PIN_D32, OUTPUT);
   
-  pinMode(output21, OUTPUT);
+  // Botões de movimento
+  pinMode(output21, OUTPUT);    
   pinMode(output18, OUTPUT);
   pinMode(output19, OUTPUT);
   pinMode(output22, OUTPUT);
-  // Set outputs to LOW
+
   digitalWrite(output21, LOW);
   digitalWrite(output18, LOW);
   digitalWrite(output19, LOW);
   digitalWrite(output22, LOW);
 
-  // Connect to Wi-Fi network with SSID and password
+  // Conecta ao Wi-Fi com o SSID e senha
   Serial.print("Setting AP (Access Point)…");
   WiFi.softAP(ssid, password);
 
@@ -64,6 +68,8 @@ void setup() {
   server.begin();
 }
 
+// Função desliga todos os inputs (de movimento)
+// Acionada quando há um novo comando de movimento para evitar curto circuito na placa
 void turnOffAllOutputs() {
   digitalWrite(output21, LOW);
   digitalWrite(output18, LOW);
@@ -76,73 +82,74 @@ void turnOffAllOutputs() {
 }
 
 void loop(){
-  
 
-  WiFiClient client = server.available();   // Listen for incoming clients
+  WiFiClient client = server.available(); 
 
-  if (client) {                             // If a new client connects,
-    Serial.println("New Client.");          // print a message out in the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    while (client.connected()) {            // loop while the client's connected
-      if (client.available()) {             // if there's bytes to read from the client,
-        char c = client.read();             // read a byte, then
-        Serial.write(c);                    // print it out the serial monitor
+  if (client) {                             // Se um novo cliente conecta,
+    Serial.println("New Client.");          
+    String currentLine = "";                // Faz uma string para guardar informação vindas do cliente
+    while (client.connected()) {            // Loop enquando o cliente estiver conectado
+      if (client.available()) {             // Se houver bytes para ler do cliente
+        char c = client.read();             // Lê o byte
+        Serial.write(c);                    // Printa o byte no monitor serial
         header += c;
-        if (c == '\n') {                    // if the byte is a newline character
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
+        if (c == '\n') {                    
+          // Fim do http request
           if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
             client.println("HTTP/1.1 200 OK");
             client.println("Content-type:text/html");
             client.println("Connection: close");
             client.println();
             
-            // 4096           ------      100%
-            // analogValue    ------       batPerc%
+            // Cáculo da bateria:
 
-            // batPerc = (100 * analogValue) / 4096
+              // 4096           ------    100%
+              // analogValue    ------    batPerc%
+
+              // batPerc = (100 * analogValue) / 4096
+              
+              int analogValue = analogRead(PIN_D32);
+
+              int batPerc = (100 * analogValue / 4096);
+              Serial.println(String("Battery life: ") + batPerc + "%");
+
+              Serial.print("analogValue: ");
+              Serial.print(analogValue);
+              Serial.println();
+
+              Serial.print("batPerc: "); 
+              Serial.print(batPerc);
+              Serial.println();
+
+            // Cáculo dos sensores de distância:  (ESTÁ CAUSANDO DELAY NOS BOTÕES!!!)
+
+              // Gera um pulso no pino Trigger
+              //digitalWrite(TRIGGER_PIN, LOW);
+              //delayMicroseconds(2);
+              //digitalWrite(TRIGGER_PIN, HIGH);
+              //delayMicroseconds(10);
+              //digitalWrite(TRIGGER_PIN, LOW);
+
+              // Lê o tempo de ida e volta do sinal no pino Echo
+              //duracao = pulseIn(ECHO_PIN, HIGH);
+
+              // Calcula a distância (tempo/2 * velocidade do som)
+              //distancia = (duracao * VELOCIDADE_SOM) / 2 / 10000.0;
             
-            int analogValue = analogRead(PIN_D32);
+              // Exibe a duração do puloso e a distância no monitor serial
+              //Serial.print("Duracao: ");
+              //Serial.print(duracao);
+              //Serial.println();
 
-            int batPerc = (100 * analogValue / 4096);
-            Serial.println(String("Battery life: ") + batPerc + "%");
+              //Serial.print("Distancia: ");
+              //Serial.print(distancia);
+              //Serial.println(" cm");
 
-            Serial.print("analogValue: ");
-            Serial.print(analogValue);
-            Serial.println();
+              // Atraso para evitar sobrecarga no monitor serial
+              //delay(500);
 
-            Serial.print("batPerc: "); 
-            Serial.print(batPerc);
-            Serial.println();
-
-            // Gera um pulso no pino Trigger
-            digitalWrite(TRIGGER_PIN, LOW);
-            delayMicroseconds(2);
-            digitalWrite(TRIGGER_PIN, HIGH);
-            delayMicroseconds(10);
-            digitalWrite(TRIGGER_PIN, LOW);
-
-            // Lê o tempo de ida e volta do sinal no pino Echo
-            duracao = pulseIn(ECHO_PIN, HIGH);
-
-            // Calcula a distância (tempo/2 * velocidade do som)
-            distancia = (duracao * VELOCIDADE_SOM) / 2 / 10000.0;
-            
-            Serial.print("Duracao: ");
-            Serial.print(duracao);
-            Serial.println();
-
-            // Exibe a distância no monitor serial
-            Serial.print("Distancia: ");
-            Serial.print(distancia);
-            Serial.println(" cm");
-
-            // Atraso para evitar sobrecarga no monitor serial
-            //delay(500);
-
-            // Turns the GPIOs on and off       
+            // Movimentação:  
+                 
             // UP
             if (header.indexOf("GET /up") >= 0) {
               if (output21State == "off" || output18State == "off") {
@@ -166,6 +173,7 @@ void loop(){
             }
             // DOWN
             else if (header.indexOf("GET /down/on") >= 0) {
+              // Liga DOWN
               Serial.println("DOWN pressed - GPIO 19 & GPIO 22 on");
               turnOffAllOutputs();
               output19State = "on";
@@ -173,6 +181,7 @@ void loop(){
               digitalWrite(output19, HIGH);
               digitalWrite(output22, HIGH);
             } else if (header.indexOf("GET /down/off") >= 0) {
+              // Desliga DOWN
               Serial.println("DOWN released - GPIO 19 & GPIO 22 off");
               output19State = "off";
               output22State = "off";
@@ -181,6 +190,7 @@ void loop(){
 
             // LEFT
             } else if (header.indexOf("GET /left/on") >= 0) {
+              // Liga LEFT
               Serial.println("LEFT pressed - GPIO 21 & GPIO 19 on");
               turnOffAllOutputs();
               output21State = "on";
@@ -188,6 +198,7 @@ void loop(){
               digitalWrite(output21, HIGH);
               digitalWrite(output19, HIGH);
             } else if (header.indexOf("GET /left/off") >= 0) {
+              // Desliga LEFT
               Serial.println("LEFT released - GPIO 21 & GPIO 19 off");
               output21State = "off";
               output19State = "off";
@@ -196,6 +207,7 @@ void loop(){
 
             // RIGHT
             } else if (header.indexOf("GET /right/on") >= 0) {
+              // Liga RIGHT
               Serial.println("RIGHT pressed - GPIO 18 & GPIO 22 on");
               turnOffAllOutputs();
               output18State = "on";
@@ -203,6 +215,7 @@ void loop(){
               digitalWrite(output18, HIGH);
               digitalWrite(output22, HIGH);
             } else if (header.indexOf("GET /right/off") >= 0) {
+              // Desliga RIGHT
               Serial.println("RIGHT released - GPIO 18 & GPIO 22 off");
               output18State = "off";
               output22State = "off";
@@ -215,7 +228,8 @@ void loop(){
               turnOffAllOutputs();
             }
             
-            // Display the HTML web page
+          // Página web:
+
             client.println("<!DOCTYPE html><html>");
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             client.println("<link rel=\"icon\" href=\"data:,\">");
@@ -240,74 +254,68 @@ void loop(){
             client.println("<body><div class=\"layout\">");
             client.println("<div class=\"header\">~ le controls</div>");
             
-             // UP
-            client.println("<div class=\"gpio gpio26\"><p>GPIO 21 - State " + output21State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 18 - State " + output18State + "</p>");
-            if (output21State == "on" && output18State == "on" && output19State == "off" && output22State == "off") {
-              client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
-            } 
-             else {
-              client.println("<p><a href=\"/up\"><button class=\"button-grey\">UP</button></a></p>");
-            } 
-            client.println("</div>");
+             // Botão UP
+              client.println("<div class=\"gpio gpio26\"><p>GPIO 21 - State " + output21State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 18 - State " + output18State + "</p>");
+              if (output21State == "on" && output18State == "on" && output19State == "off" && output22State == "off") {
+                client.println("<p><a href=\"/up/off\"><button class=\"button-grey button-green\">UP</button></a></p>");
+              } 
+              else {
+                client.println("<p><a href=\"/up\"><button class=\"button-grey\">UP</button></a></p>");
+              } 
+              client.println("</div>");
 
+            // Botão LEFT
+              client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "<br>GPIO 19 - State " + output19State + "</p>");
+              if (output21State == "on" && output18State == "off" && output19State == "on" && output22State == "off") {
+                client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT&nbsp</button></a></p>");
+              } else {
+                client.println("<p><a href=\"/left/on\"><button class=\"button-grey\">LEFT</button></a></p>");
+              }
+              client.println("</div>");
 
-            // LEFT
-            client.println("<div class=\"gpio gpio21\"><p>GPIO 21 - State " + output21State + "<br>GPIO 19 - State " + output19State + "</p>");
-            if (output21State == "on" && output18State == "off" && output19State == "on" && output22State == "off") {
-              client.println("<p><a href=\"/left/off\"><button class=\"button-grey button-green\">LEFT&nbsp</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/left/on\"><button class=\"button-grey\">LEFT</button></a></p>");
-            }
-            client.println("</div>");
+            // Botão RIGHT
+              client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "<br>GPIO 22 - State " + output22State + "</p>");
+              if (output21State == "off" && output18State == "on" && output19State == "off" && output22State == "on") {
+                client.println("<p><a href=\"/right/off\"><button class=\"button-grey button-green\">RIGHT</button></a></p>");
+              } else {
+                client.println("<p><a href=\"/right/on\"><button class=\"button-grey\">RIGHT</button></a></p>");
+              }
+              client.println("</div>");
 
-            // RIGHT
-            client.println("<div class=\"gpio gpio18\"><p>GPIO 18 - State " + output18State + "<br>GPIO 22 - State " + output22State + "</p>");
-            if (output21State == "off" && output18State == "on" && output19State == "off" && output22State == "on") {
-              client.println("<p><a href=\"/right/off\"><button class=\"button-grey button-green\">RIGHT</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/right/on\"><button class=\"button-grey\">RIGHT</button></a></p>");
-            }
-            client.println("</div>");
+            // Botão DOWN
+              client.println("<div class=\"gpio gpio27\"><p>GPIO 19 - State " + output19State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 22 - State " + output22State + "</p>");
+              if (output19State == "on" && output22State == "on") {
+                client.println("<p><a href=\"/down/off\"><button class=\"button-grey button-green\">DOWN</button></a></p>");
+              } else {
+                client.println("<p><a href=\"/down/on\"><button class=\"button-grey\">DOWN</button></a></p>");
+              }
+              client.println("</div>");
 
-            // DOWN
-            client.println("<div class=\"gpio gpio27\"><p>GPIO 19 - State " + output19State + "&nbsp;&nbsp;&nbsp;&nbsp; GPIO 22 - State " + output22State + "</p>");
-            if (output19State == "on" && output22State == "on") {
-              client.println("<p><a href=\"/down/off\"><button class=\"button-grey button-green\">DOWN</button></a></p>");
-            } else {
-              client.println("<p><a href=\"/down/on\"><button class=\"button-grey\">DOWN</button></a></p>");
-            }
-            client.println("</div>");
+            // Botão RESET/Display da bateria
+              client.println(String("<div class=\"gpio reset\"><p>Battery life: ") + batPerc + "%</p>");
+              client.println("<p><a href=\"/reset\"><button class=\"button-grey button-reset\">RESET</button></a></p>");
+              client.println("</div>");
 
-            // RESET
-            client.println(String("<div class=\"gpio reset\"><p>Battery life: ") + batPerc + "%</p>");
+            // Footer com os créditos
+              client.println("<div class=\"footer\">by Eduardoros & gbzinsheik");
+              client.println("</div>");
 
-            //client.println("<div class=\"gpio reset\"><p>RESET</p>");
-            client.println("<p><a href=\"/reset\"><button class=\"button-grey button-reset\">RESET</button></a></p>");
-            client.println("</div>");
-
-            //client.println(String("<div class=\"battery\">Battery life: " )+ batPerc + "%</div>");
-
-            client.println("<div class=\"footer\">by Eduardoros & gbzinsheik");
-            client.println("</div>");
-
-            client.println("</body></html>");
-            
+            client.println("</body></html>");          
             client.println();
-            // Break out of the while loop
             break;
-          } else { // if you got a newline, then clear currentLine
+          } else {
             currentLine = "";
           }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
-          currentLine += c;      // add it to the end of the currentLine
+        } else if (c != '\r') {  
+          currentLine += c;
         }
       }
     }
-    // Clear the header variable
+    // Limpa variável header
     header = "";
-    // Close the connection
+    // Fecha a conexão
     client.stop();
-    //Serial.println("Client disconnected.");
+    Serial.println("Client disconnected.");
     Serial.println("");
   }
 }
