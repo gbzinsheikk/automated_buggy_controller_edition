@@ -1,7 +1,7 @@
 // Biblioteca Wi-Fi
 #include <WiFi.h>
 
-#define PIN_D33 33
+#define PIN_D32 32
 #define TRIGGER_PIN 12
 #define ECHO_PIN 13
 
@@ -44,7 +44,7 @@ void setup() {
   pinMode(ECHO_PIN, INPUT);
 
   // Bateria
-  pinMode(PIN_D33, INPUT);
+  pinMode(PIN_D32, OUTPUT);
 
   // Botões de movimento
   pinMode(output21, OUTPUT);
@@ -108,7 +108,7 @@ void loop() {
 
             // batPerc = (100 * analogValue) / 4096
 
-            int analogValue = analogRead(PIN_D33);
+            int analogValue = analogRead(PIN_D32);
 
             int batPerc = (100 * analogValue / 4096);
             Serial.println(String("Battery life: ") + batPerc + "%");
