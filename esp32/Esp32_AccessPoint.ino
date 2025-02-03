@@ -103,22 +103,18 @@ void loop() {
 
             // Cáculo da bateria:
 
-            // 4096           ------    100%
-            // analogValue    ------    batPerc%
+            // ADC = (Vin * 4096) / Vref
 
-            // batPerc = (100 * analogValue) / 4096
+            // Vin = Bat / 3
 
-            int analogValue = analogRead(PIN_D32);
+            // Bat = (ADC * 3 * Vref) / 4096
 
-            int batPerc = (100 * analogValue / 4096);
-            Serial.println(String("Battery life: ") + batPerc + "%");
+            float analogValue = analogRead(PIN_D32);
+
+            float Bat = (analogValue * 3 * 3.3)/4096;
 
             Serial.print("analogValue: ");
             Serial.print(analogValue);
-            Serial.println();
-
-            Serial.print("batPerc: ");
-            Serial.print(batPerc);
             Serial.println();
 
             // Cáculo dos sensores de distância:  (ESTÁ CAUSANDO DELAY NOS BOTÕES!!!)
@@ -292,7 +288,7 @@ void loop() {
             client.println("</div>");
 
             // Botão RESET/Display da bateria
-            client.println(String("<div class=\"gpio reset\"><p>Battery life: ") + batPerc + "%</p>");
+            client.println(String("<div class=\"gpio reset\"><p>Battery Voltage: ") + Bat + " V</p>");
             client.println("<p><a href=\"/reset\"><button class=\"button-grey button-reset\">RESET</button></a></p>");
             client.println("</div>");
 
