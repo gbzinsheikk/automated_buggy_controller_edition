@@ -104,45 +104,16 @@ void loop() {
             // Cáculo da bateria:
 
             // ADC = (Vin * 4096) / Vref
-
             // Vin = Bat / 3
 
             // Bat = (ADC * 3 * Vref) / 4096
 
             float analogValue = analogRead(PIN_D32);
-
             float Bat = (analogValue * 3 * 3.3)/4096;
 
             Serial.print("analogValue: ");
             Serial.print(analogValue);
             Serial.println();
-
-            // Cáculo dos sensores de distância:  (ESTÁ CAUSANDO DELAY NOS BOTÕES!!!)
-
-            // Gera um pulso no pino Trigger
-            //digitalWrite(TRIGGER_PIN, LOW);
-            //delayMicroseconds(2);
-            //digitalWrite(TRIGGER_PIN, HIGH);
-            //delayMicroseconds(10);
-            //digitalWrite(TRIGGER_PIN, LOW);
-
-            // Lê o tempo de ida e volta do sinal no pino Echo
-            //duracao = pulseIn(ECHO_PIN, HIGH);
-
-            // Calcula a distância (tempo/2 * velocidade do som)
-            //distancia = (duracao * VELOCIDADE_SOM) / 2 / 10000.0;
-
-            // Exibe a duração do puloso e a distância no monitor serial
-            //Serial.print("Duracao: ");
-            //Serial.print(duracao);
-            //Serial.println();
-
-            //Serial.print("Distancia: ");
-            //Serial.print(distancia);
-            //Serial.println(" cm");
-
-            // Atraso para evitar sobrecarga no monitor serial
-            //delay(500);
 
             // Movimentação:
 
