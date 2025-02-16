@@ -19,6 +19,7 @@
       const char* ssid     = "BuggyAWD-AP";
       const char* password = "abc42069";
     Após isso, é necessário obter o IP do access point usando o softAPIP() e imprimir no monitor serial.
+  
       // Conecta ao Wi-Fi com o SSID e senha
       Serial.print("Setting AP (Access Point)…");
       WiFi.softAP(ssid, password);
@@ -37,6 +38,7 @@
    Para a interface da página web, foi tido em mente um design simples e prático. Onde o usuário tenha dinamicidade ao controlar os comandos do Buggy, e claridade visual de quais botões e pinos estão ligados/desligados e qual movimentação está, ou não, está sendo realizada. Portanto foi escolhido um design semelhante a um controle de video game, os botões foram postos em uma posição de cruz em suas posições respectivas e também foi implementado um tracker de estado para cada um dos botões, onde ele mostra os pinos associados a cada botão e se estão ligados ou desligados. Por fim, temos o seguinte design:
   
   ![pagWeb_screenshot](https://github.com/user-attachments/assets/59af1dba-c623-459c-8fea-79207d46fc6d)
+
   **Fonte: Elaboração própria (2024).**
   
   O Buggy AWD possui 4 motores, **M1**(Direito, para frente), **M1N**(Direito, para trás), **M2**(Esquerdo, para frente), **M2N**(Esquerdo, para trás). Cada botão foi associado aos pinos da ESP correspondentes à movimentação requerida. Os motores e pinos escolhidos para cada movimento são demonstrados pela tabela abaixo:
@@ -51,7 +53,7 @@
   A opção de armazenamento dos controles é realizada através de cookies criados usando a linguagem javascript, inserida no html da página, e permitem a função de salvar inputs do usuário. 
   Nota-se que, para as movimentações LEFT e RIGHT, além de alimentar o motor dianteiro necessário para virar, foi alimentado também um motor traseiro que auxilia no movimento do giro. Fazendo com que o carrinho gire em seu próprio eixo e mais rapidamente na direção requisitada. 
   
-  Os botões da página servem como switches, alternando seu estado de ON para OFF dependendo do clique do usuário. Ao serem apertados, é primeiro verificado se o botão já não está ligado, se não estiver os terminais específicos daquele botão seram ligados, e seu display de estado na página web será atualizado. Caso o botão já esteja apertado, ele é retornado ao estado OFF. Abaixo está um exemplo do código implementado ao botão **DOWN**:
+  Os botões da página servem como switches, alternando seu estado de ON para OFF dependendo do clique do usuário. Ao serem apertados, é primeiro verificado se o botão já não está ligado, se não estiver os terminais específicos daquele botão serão ligados, e seu display de estado na página web será atualizado. Caso o botão já esteja apertado, ele é retornado ao estado OFF. Abaixo está um exemplo do código implementado ao botão **DOWN**:
 
           // DOWN
               else if (header.indexOf("GET /down/on") >= 0) {
@@ -72,14 +74,26 @@
   
   Note também que, há uma função chamada "turnOffAllOutputs()" inicializando antes de ligar qualquer dos pinos daquele botão. Essa função foi implementada tendo em mente uma particularidade da placa do Buggy, onde caso os motores M1 e M1N ou M2 e M2N sejam ligados simultaneamente isso causará um curto circuito na placa, queimando-a. Para evitar isso, essa função desligará todos os inputs ligados anteriormente (se houver) antes de ligar o botão pedido.
 
-   - Tracker de Bateria
- 
-      [...]
+   - Display de Tensão das Baterias
+     
+  Na página web, é mostrada a tensão sendo aplicada pelas baterias do Buggy AWD. Esse dado está presente acima do botão RESET, ao final da página, ele somente atualizará caso a página seja recarregada (ou algum botão for apertado ou solto).
+  O cálculo da tensão das baterias é feito da seguinte forma:
+
+            // Cáculo da bateria:
+            // ADC = (Vin * 4096) / Vref
+            // Vin = Bat / 3
+  Sabendo que, 'ADC' é o valor lido pelo terminal D32 da ESP32 e Vref a tensão de referência de cada uma da baterias (3.3 V); temos como objetivo encontrar a variável 'Bat'. Portanto:
   
-  - Sensores de Distância
-    
-      [...]
+            // Bat = (ADC * 3 * Vref) / 4096
+  Tendo a equação acima, podemos aplicá-la para encontrar a tensão atual das baterias:
   
-  - Armazenamento de inputs
+            float analogValue = analogRead(PIN_D32);
+            float Bat = (analogValue * 3 * 3.3)/4096;
+
+  Exemplo do botão RESET junto com o display de tensão das baterias:
   
-      A opção de armazenamento dos controles será realizada através de cookies criados usando a linguagem javascript, inserida no html da página, e permitem a função de salvar inputs do usuário.  [...]
+![BotaoRESET+Voltage](https://github.com/user-attachments/assets/5a0132eb-1230-4d5e-a34b-70ae265464b4)
+
+
+  **Fonte: Elaboração própria (2025).**
+  
