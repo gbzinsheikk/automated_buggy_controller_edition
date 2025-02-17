@@ -21,10 +21,19 @@ Desenvolver ferramentas e tecnologias que permitam que:
 - Uma página web receba comandos e os envie ao carrinho, como um controle remoto;
 - A página web mostre os botões para cada movimento direciado do Buggy AWD;
 - Tenha um display na página mostrando a tensão atual provida pelas baterias;
-- A direção autônoma seja capaz de guiá-lo por uma pista pré estabelecida com
-características de fácil reconhecimento pelos sensores presentes.
 
 Detalhes de Design
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/design.md
+
+Detalhes da implementação
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/implement.md
+
+Detalhes da operação (Documentação de uso)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://github.com/gbzinsheikk/automated_buggy_controller_edition/blob/master/Operate.md
+
